@@ -11,7 +11,7 @@ fn input() -> Option<String> {
                 Ok(_) => Some(s),
                 Err(_) => None,
             }
-        },
+        }
         Err(_) => None,
     }
 }
@@ -82,51 +82,51 @@ impl Position {
         let new_direction = match step.direction {
             Direction::Left => {
                 match self.facing {
-                    CompassDirection::North => {
-                        CompassDirection::West
-                    },
-                    CompassDirection::East => {
-                        CompassDirection::North
-                    },
-                    CompassDirection::South => {
-                        CompassDirection::East
-                    },
-                    CompassDirection::West => {
-                        CompassDirection::South
-                    },
+                    CompassDirection::North => CompassDirection::West,
+                    CompassDirection::East => CompassDirection::North,
+                    CompassDirection::South => CompassDirection::East,
+                    CompassDirection::West => CompassDirection::South,
                 }
-            },
+            }
             Direction::Right => {
                 match self.facing {
-                    CompassDirection::North => {
-                        CompassDirection::East
-                    },
-                    CompassDirection::East => {
-                        CompassDirection::South
-                    },
-                    CompassDirection::South => {
-                        CompassDirection::West
-                    },
-                    CompassDirection::West => {
-                        CompassDirection::North
-                    },
+                    CompassDirection::North => CompassDirection::East,
+                    CompassDirection::East => CompassDirection::South,
+                    CompassDirection::South => CompassDirection::West,
+                    CompassDirection::West => CompassDirection::North,
                 }
-            },
+            }
         };
 
         match new_direction {
             CompassDirection::North => {
-                Position { facing: new_direction, x: self.x, y: self.y + step.length.num }
-            },
+                Position {
+                    facing: new_direction,
+                    x: self.x,
+                    y: self.y + step.length.num,
+                }
+            }
             CompassDirection::East => {
-                Position { facing: new_direction, x: self.x + step.length.num, y: self.y }
-            },
+                Position {
+                    facing: new_direction,
+                    x: self.x + step.length.num,
+                    y: self.y,
+                }
+            }
             CompassDirection::South => {
-                Position { facing: new_direction, x: self.x, y: self.y - step.length.num }
-            },
+                Position {
+                    facing: new_direction,
+                    x: self.x,
+                    y: self.y - step.length.num,
+                }
+            }
             CompassDirection::West => {
-                Position { facing: new_direction, x: self.x - step.length.num, y: self.y }
-            },
+                Position {
+                    facing: new_direction,
+                    x: self.x - step.length.num,
+                    y: self.y,
+                }
+            }
         }
     }
 }
@@ -138,10 +138,12 @@ struct Trail {
 
 impl Trail {
     fn new() -> Trail {
-        let start = Position { facing: CompassDirection::North, x: 0, y: 0 };
-        Trail {
-            path: vec![start],
-        }
+        let start = Position {
+            facing: CompassDirection::North,
+            x: 0,
+            y: 0,
+        };
+        Trail { path: vec![start] }
     }
 
     fn add_by_following(&mut self, step: Step) {
