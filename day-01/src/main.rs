@@ -55,7 +55,7 @@ impl Step {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum CompassDirection {
     North,
     East,
@@ -70,75 +70,102 @@ struct Position {
     y: i32,
 }
 
+impl PartialEq for Position {
+    fn eq(&self, other: &Position) -> bool {
+        // don't want to consider other attributes, like "facing"
+        self.x == other.x && self.y == other.y
+    }
+}
+
 impl Position {
-    fn follow(&mut self, step: Step) {
-        match step.direction {
+    fn follow(&self, step: Step) -> Position {
+        let new_direction = match step.direction {
             Direction::Left => {
                 match self.facing {
                     CompassDirection::North => {
-                        self.facing = CompassDirection::West;
+                        CompassDirection::West
                     },
                     CompassDirection::East => {
-                        self.facing = CompassDirection::North;
+                        CompassDirection::North
                     },
                     CompassDirection::South => {
-                        self.facing = CompassDirection::East;
+                        CompassDirection::East
                     },
                     CompassDirection::West => {
-                        self.facing = CompassDirection::South;
+                        CompassDirection::South
                     },
                 }
             },
             Direction::Right => {
                 match self.facing {
                     CompassDirection::North => {
-                        self.facing = CompassDirection::East;
+                        CompassDirection::East
                     },
                     CompassDirection::East => {
-                        self.facing = CompassDirection::South;
+                        CompassDirection::South
                     },
                     CompassDirection::South => {
-                        self.facing = CompassDirection::West;
+                        CompassDirection::West
                     },
                     CompassDirection::West => {
-                        self.facing = CompassDirection::North;
+                        CompassDirection::North
                     },
                 }
             },
-        }
+        };
 
-        match self.facing {
+        match new_direction {
             CompassDirection::North => {
-                self.y = self.y + step.length.num;
+                Position { facing: new_direction, x: self.x, y: self.y + step.length.num }
             },
             CompassDirection::East => {
-                self.x = self.x + step.length.num;
+                Position { facing: new_direction, x: self.x + step.length.num, y: self.y }
             },
             CompassDirection::South => {
-                self.y = self.y - step.length.num;
+                Position { facing: new_direction, x: self.x, y: self.y - step.length.num }
             },
             CompassDirection::West => {
-                self.x = self.x - step.length.num;
+                Position { facing: new_direction, x: self.x - step.length.num, y: self.y }
             },
         }
     }
 }
 
-fn distance(position: Position) -> i32 {
-    position.x.checked_abs().expect("uh") + position.y.checked_abs().expect("oo")
+#[derive(Debug)]
+struct Trail {
+    path: Vec<Position>,
+}
+
+impl Trail {
+    fn new() -> Trail {
+        let start = Position { facing: CompassDirection::North, x: 0, y: 0 };
+        Trail {
+            path: vec![start],
+        }
+    }
+
+    fn add_by_following(&mut self, step: Step) {
+        let new_position = self.path.last().expect("must not be empty").follow(step);
+        if self.path.iter().any(|pos| pos == &new_position) {
+            println!("Wow, we've been here before! {:?}", new_position);
+            println!("Distance: {}", self.distance(&new_position));
+        }
+        self.path.push(new_position);
+    }
+
+    fn distance(&self, position: &Position) -> i32 {
+        position.x.checked_abs().expect("uh") + position.y.checked_abs().expect("oo")
+    }
 }
 
 fn main() {
     let instructions = input().expect("uh, couldn't read file");
     let re = Regex::new(r"^([LR])(\d*)$").expect("Could not compile regex");
 
-    let mut position = Position { facing: CompassDirection::North, x: 0, y: 0 };
+    let mut trail = Trail::new();
 
     let steps = instructions.split(", ").map(|step| Step::new(step.trim_right(), &re));
     for step in steps {
-        position.follow(step);
-        println!("{:?}", position);
+        trail.add_by_following(step);
     }
-
-    println!("Final destination is {} blocks from starting position", distance(position));
 }
