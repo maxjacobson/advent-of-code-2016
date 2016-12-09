@@ -30,7 +30,7 @@ struct Step {
 
 impl Step {
     fn new(raw_input: &str, re: &Regex) -> Step {
-        let cap = re.captures(raw_input).expect("Invalid direction");
+        let cap = re.captures(raw_input.trim()).expect("Invalid direction");
         let direction = match cap.at(1) {
             Some("L") => Direction::Left,
             Some("R") => Direction::Right,
@@ -141,6 +141,14 @@ impl Trail {
         Trail { path: vec![start] }
     }
 
+    fn follow_instructions(&mut self, instructions: String) {
+        let re = Regex::new(r"^([LR])(\d*)$").expect("Could not compile regex");
+        let steps = instructions.split(", ").map(|step| Step::new(step, &re));
+        for step in steps {
+            self.add_by_following(step);
+        }
+    }
+
     fn add_by_following(&mut self, step: Step) {
         let new_position = self.current_position().follow(step);
         if self.path.iter().any(|pos| pos == &new_position) {
@@ -167,14 +175,8 @@ impl Trail {
 
 fn main() {
     let instructions = input().expect("uh, couldn't read file");
-    let re = Regex::new(r"^([LR])(\d*)$").expect("Could not compile regex");
 
     let mut trail = Trail::new();
-
-    let steps = instructions.split(", ").map(|step| Step::new(step.trim_right(), &re));
-    for step in steps {
-        trail.add_by_following(step);
-    }
-
+    trail.follow_instructions(instructions);
     trail.summarize_position();
 }
