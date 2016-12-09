@@ -142,12 +142,22 @@ impl Trail {
     }
 
     fn add_by_following(&mut self, step: Step) {
-        let new_position = self.path.last().expect("must not be empty").follow(step);
+        let new_position = self.current_position().follow(step);
         if self.path.iter().any(|pos| pos == &new_position) {
             println!("Wow, we've been here before! {:?}", new_position);
             println!("Distance: {}", self.distance(&new_position));
         }
         self.path.push(new_position);
+    }
+
+    fn current_position(&self) -> &Position {
+        self.path.last().expect("must not be empty")
+    }
+
+    fn summarize_position(&self) {
+        let pos = self.current_position();
+        println!("Current position is {:?}", pos);
+        println!("Which is {} blocks from the starting position", self.distance(pos));
     }
 
     fn distance(&self, position: &Position) -> i32 {
@@ -165,4 +175,6 @@ fn main() {
     for step in steps {
         trail.add_by_following(step);
     }
+
+    trail.summarize_position();
 }
