@@ -149,9 +149,13 @@ impl Trail {
         }
     }
 
+    fn been_to_position(&self, new_pos: &Position) -> bool {
+        self.path.iter().any(|pos| pos == new_pos)
+    }
+
     fn add_by_following(&mut self, step: Step) {
         let new_position = self.current_position().follow(step);
-        if self.path.iter().any(|pos| pos == &new_position) {
+        if self.been_to_position(&new_position) {
             println!("Wow, we've been here before! {:?}", new_position);
             println!("Distance: {}", self.distance(&new_position));
         }
@@ -180,3 +184,21 @@ fn main() {
     trail.follow_instructions(instructions);
     trail.summarize_position();
 }
+
+#[test]
+fn test_been_to_position() {
+    let mut trail = Trail::new();
+    let starting_point = Position { facing: CompassDirection::North, x: 0, y: 0 };
+    assert!(trail.been_to_position(&starting_point));
+
+    let starting_point_facing_doesnt_matter = Position { facing: CompassDirection::South, x: 0, y: 0 };
+    assert!(trail.been_to_position(&starting_point_facing_doesnt_matter));
+
+    let one_to_the_right = Position { facing: CompassDirection::North, x: 1, y: 0 };
+    assert!(!trail.been_to_position(&one_to_the_right));
+
+    trail.follow_instructions(String::from("R1"));
+    assert!(trail.been_to_position(&one_to_the_right));
+    assert!(trail.been_to_position(&starting_point));
+}
+
