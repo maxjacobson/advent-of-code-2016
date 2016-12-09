@@ -94,8 +94,7 @@ impl Position {
         };
 
         (1..step.length + 1)
-            .map(|z| {
-                // FIXME: renmame this dumb var name...
+            .map(|z| { // FIXME: renmame this dumb var name...
                 match new_direction {
                     CompassDirection::North => {
                         Position {
