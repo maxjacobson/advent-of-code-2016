@@ -23,14 +23,9 @@ enum Direction {
 }
 
 #[derive(Debug)]
-struct Length {
-    num: i32,
-}
-
-#[derive(Debug)]
 struct Step {
     direction: Direction,
-    length: Length,
+    length: i32,
 }
 
 impl Step {
@@ -50,7 +45,7 @@ impl Step {
 
         Step {
             direction: direction,
-            length: Length { num: num },
+            length: num,
         }
     }
 }
@@ -103,13 +98,13 @@ impl Position {
                 Position {
                     facing: new_direction,
                     x: self.x,
-                    y: self.y + step.length.num,
+                    y: self.y + step.length,
                 }
             }
             CompassDirection::East => {
                 Position {
                     facing: new_direction,
-                    x: self.x + step.length.num,
+                    x: self.x + step.length,
                     y: self.y,
                 }
             }
@@ -117,13 +112,13 @@ impl Position {
                 Position {
                     facing: new_direction,
                     x: self.x,
-                    y: self.y - step.length.num,
+                    y: self.y - step.length,
                 }
             }
             CompassDirection::West => {
                 Position {
                     facing: new_direction,
-                    x: self.x - step.length.num,
+                    x: self.x - step.length,
                     y: self.y,
                 }
             }
