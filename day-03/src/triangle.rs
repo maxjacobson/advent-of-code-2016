@@ -1,8 +1,8 @@
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Triangle {
-    a: usize,
-    b: usize,
-    c: usize,
+    pub a: usize,
+    pub b: usize,
+    pub c: usize,
 }
 
 impl Triangle {
