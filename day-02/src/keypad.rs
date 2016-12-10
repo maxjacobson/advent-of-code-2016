@@ -6,7 +6,7 @@ enum KeypadDirective {
     Left,
 }
 
-type Button = char;
+type Button = Option<char>;
 
 #[derive(Debug)]
 pub struct Keypad {
@@ -17,12 +17,14 @@ pub struct Keypad {
 impl Keypad {
     pub fn new(position: (usize, usize)) -> Keypad {
         Keypad {
-            buttons: [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']],
-            position: position, // (0, 0) is top left; (2, 2) is bottom right
+            buttons: [[Some('1'), Some('2'), Some('3')],
+                      [Some('4'), Some('5'), Some('6')],
+                      [Some('7'), Some('8'), Some('9')]],
+            position: position,
         }
     }
 
-    pub fn adjust(&self, directive: Button) -> Keypad {
+    pub fn adjust(&self, directive: char) -> Keypad {
         let directive = self.keypad_directive_from(directive);
         let new_position = match directive {
             KeypadDirective::Up => {
@@ -54,7 +56,7 @@ impl Keypad {
         Keypad::new(new_position)
     }
 
-    pub fn current_button(&self) -> char {
+    pub fn current_button(&self) -> Button {
         self.buttons[self.position.0][self.position.1]
     }
 

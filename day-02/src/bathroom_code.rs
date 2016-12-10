@@ -20,7 +20,7 @@ impl BathroomCode {
                     keypad = keypad.adjust(directive);
                 }
 
-                keypad.current_button()
+                keypad.current_button().unwrap()
             })
             .collect();
 
