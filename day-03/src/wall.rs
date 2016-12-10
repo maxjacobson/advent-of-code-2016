@@ -42,7 +42,16 @@ impl Wall {
 #[test]
 fn loading_file_by_column() {
     let wall = Wall::new(String::from("example.txt"));
-    println!("{:?}", wall);
-    // assert_eq!(wall.triangles.get(0).unwrap(), &Triangle { a: 101, b: 102, c: 103 });
-    // assert_eq!(wall.triangles.get(5).unwrap(), &Triangle { a: 601, b: 602, c: 603 });
+    assert_eq!(wall.triangles.get(0).unwrap(),
+               &Triangle {
+                   a: 101,
+                   b: 102,
+                   c: 103,
+               });
+    assert_eq!(wall.triangles.get(5).unwrap(),
+               &Triangle {
+                   a: 601,
+                   b: 602,
+                   c: 603,
+               });
 }
