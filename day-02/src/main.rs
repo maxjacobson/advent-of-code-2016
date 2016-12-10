@@ -10,5 +10,5 @@ fn main() {
 #[test]
 fn example() {
     let bathroom_code = BathroomCode::new(String::from("example.txt"));
-    assert_eq!(bathroom_code.val, String::from("1985"));
+    assert_eq!(bathroom_code.val, String::from("5DB3"));
 }

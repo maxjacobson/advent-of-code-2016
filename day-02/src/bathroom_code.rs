@@ -12,7 +12,7 @@ impl BathroomCode {
         let mut s = String::new();
         f.read_to_string(&mut s).unwrap();
 
-        let mut keypad = Keypad::new((1, 1));
+        let mut keypad = Keypad::new((2, 0));
 
         let val: String = s.lines()
             .map(|line| {
