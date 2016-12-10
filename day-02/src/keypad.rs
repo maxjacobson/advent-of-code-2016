@@ -6,9 +6,11 @@ enum KeypadDirective {
     Left,
 }
 
+type Button = char;
+
 #[derive(Debug)]
 pub struct Keypad {
-    buttons: [[char; 3]; 3],
+    buttons: [[Button; 3]; 3],
     position: (usize, usize),
 }
 
@@ -20,7 +22,7 @@ impl Keypad {
         }
     }
 
-    pub fn adjust(&self, directive: char) -> Keypad {
+    pub fn adjust(&self, directive: Button) -> Keypad {
         let directive = self.keypad_directive_from(directive);
         let new_position = match directive {
             KeypadDirective::Up => {
