@@ -1,5 +1,4 @@
 mod bathroom_code;
-mod button;
 mod keypad;
 use bathroom_code::BathroomCode;
 

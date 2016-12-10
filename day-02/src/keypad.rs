@@ -1,5 +1,3 @@
-use button::Button;
-
 #[derive(Debug)]
 enum KeypadDirective {
     Up,
@@ -10,16 +8,14 @@ enum KeypadDirective {
 
 #[derive(Debug)]
 pub struct Keypad {
-    buttons: [[Button; 3]; 3],
+    buttons: [[char; 3]; 3],
     position: (usize, usize),
 }
 
 impl Keypad {
     pub fn new(position: (usize, usize)) -> Keypad {
         Keypad {
-            buttons: [[Button::new('1'), Button::new('2'), Button::new('3')],
-                      [Button::new('4'), Button::new('5'), Button::new('6')],
-                      [Button::new('7'), Button::new('8'), Button::new('9')]],
+            buttons: [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']],
             position: position, // (0, 0) is top left; (2, 2) is bottom right
         }
     }
@@ -57,7 +53,7 @@ impl Keypad {
     }
 
     pub fn current_button(&self) -> char {
-        self.buttons[self.position.0][self.position.1].val
+        self.buttons[self.position.0][self.position.1]
     }
 
     fn keypad_directive_from(&self, directive: char) -> KeypadDirective {
