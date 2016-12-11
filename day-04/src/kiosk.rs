@@ -5,7 +5,7 @@ use room::Room;
 
 #[derive(Debug)]
 pub struct Kiosk {
-    rooms: Vec<Room>,
+    pub rooms: Vec<Room>,
 }
 
 impl Kiosk {

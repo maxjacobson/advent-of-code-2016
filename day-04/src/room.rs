@@ -57,6 +57,25 @@ impl Room {
         let calculated: String = character_counts_vec.iter().map(|cc| *cc.0).take(5).collect();
         calculated
     }
+
+    pub fn decrypt(&self) -> String {
+        self.encrypted_name.chars().map(|c| self.rotated(&c)).collect()
+    }
+
+    fn rotated(&self, c: &char) -> char {
+        match c {
+            &'-' => ' ',
+            _ => {
+                let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+                                'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+
+                let iter = alphabet.iter();
+                let cycle = iter.cycle();
+                let idx = alphabet.iter().position(|cc| cc == c).unwrap();
+                cycle.skip(idx + self.sector_id as usize).next().unwrap().to_owned()
+            }
+        }
+    }
 }
 
 #[test]
@@ -80,4 +99,10 @@ fn real() {
 
     let room4 = Room::new(String::from("totally-real-room-200[decoy]"));
     assert!(!room4.real());
+}
+
+#[test]
+fn decrypt() {
+    let room = Room::new(String::from("qzmt-zixmtkozy-ivhz-343[decoy]"));
+    assert_eq!(room.decrypt(), String::from("very encrypted name"));
 }
