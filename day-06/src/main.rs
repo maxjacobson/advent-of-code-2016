@@ -8,5 +8,5 @@ fn main() {
 
 #[test]
 fn example() {
-    assert_eq!(Message::new("example.txt").message(), "easter");
+    assert_eq!(Message::new("example.txt").message(), "advent");
 }

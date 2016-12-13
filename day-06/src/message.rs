@@ -25,7 +25,7 @@ impl Message {
         let mut result = vec![];
         for x in 0..(self.matrix.iter().nth(0).unwrap().len()) {
             let mut col = vec![];
-            for y in (0..self.matrix.len()) {
+            for y in 0..self.matrix.len() {
                 col.push(self.matrix[y][x]);
             }
             let most = self.most_common(col);
@@ -43,7 +43,7 @@ impl Message {
         }
 
         let mut character_counts_vec: Vec<(&char, &u32)> = character_counts.iter().collect();
-        character_counts_vec.sort_by(|a, b| b.1.cmp(a.1));
+        character_counts_vec.sort_by(|a, b| a.1.cmp(b.1));
 
         *character_counts_vec.iter().nth(0).unwrap().0
     }
