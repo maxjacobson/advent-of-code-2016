@@ -1,47 +1,59 @@
 extern crate regex;
 use self::regex::Regex;
 
-struct IpAddress {
-    raw_input: String,
-    re: Regex,
-    other_re: Regex,
+#[derive(Debug)]
+pub struct IpAddress {
+    pub raw_input: String,
+    raw_input_pattern: Regex,
 }
 
 impl IpAddress {
-    fn new(raw_input: String) -> IpAddress {
-        // FIXME: make this one pattern?
-        let re = Regex::new(r"(\w+)\[(\w+)\](\w+)?").unwrap();
-        let other_re = Regex::new(r"(\w)(\w)\2\1").unwrap();
+    pub fn new(raw_input: String) -> IpAddress {
+        let raw_input_pattern = Regex::new(r"(\w+)?\[(\w+)\](\w+)?").unwrap();
         IpAddress {
             raw_input: raw_input,
-            re: re,
-            other_re: other_re,
+            raw_input_pattern: raw_input_pattern,
         }
     }
 
-    fn tls(&self) -> bool {
+    pub fn tls(&self) -> bool {
         let mut abbas = vec![];
         let mut brackets_abbas = vec![];
-        for cap in self.re.captures_iter(&self.raw_input) {
-            let pre_brackets_text = cap.at(1).unwrap();
+        for cap in self.raw_input_pattern.captures_iter(&self.raw_input) {
+            let pre_brackets_text = cap.at(1).unwrap_or("");
             abbas.push(pre_brackets_text);
             let in_brackets_text = cap.at(2).unwrap();
             brackets_abbas.push(in_brackets_text);
             let post_brackets_text = cap.at(3).unwrap_or("");
             abbas.push(post_brackets_text);
         }
-        // println!("match: {:?}", cap);
-        // println!("{:?}", abbas);
-        abbas.iter().any(|a| self.is_abba(a)) && !brackets_abbas.iter().any(|a| self.is_abba(a))
+        let any_outside_of_brackets = abbas.iter().any(|a| self.is_abba(a));
+        let any_in_brackets = brackets_abbas.iter().any(|a| self.is_abba(a));
+
+        any_outside_of_brackets && !any_in_brackets
     }
 
     fn is_abba(&self, abba: &str) -> bool {
-        // println!("{:?}", abba);
-        // self.other_re.is_match(abba)
-        for cap in self.other_re.captures_iter(abba) {
-            println!("GOT IT {:?}", abba);
-            let the_match = cap.at(0).unwrap();
-            if the_match.chars().nth(0).unwrap() != the_match.chars().nth(1).unwrap() {
+        for i in 0..abba.chars().count() {
+            let a1 = abba.chars().nth(i);
+            let b1 = abba.chars().nth(i + 1);
+            let b2 = abba.chars().nth(i + 2);
+            let a2 = abba.chars().nth(i + 3);
+            if a1.is_none() {
+                continue;
+            }
+            if b1.is_none() {
+                continue;
+            }
+            if b2.is_none() {
+                continue;
+            }
+            if a2.is_none() {
+                continue;
+            }
+
+            if a1.unwrap() == a2.unwrap() && b1.unwrap() == b2.unwrap() &&
+               a1.unwrap() != b1.unwrap() {
                 return true;
             }
         }
@@ -78,10 +90,4 @@ fn hidden_within_strings() {
     // , even though it's within a larger string).
     let ip = IpAddress::new(String::from("ioxxoj[asdfgh]zxcvbn"));
     assert!(ip.tls());
-}
-
-#[test]
-fn pattern() {
-    let ip = IpAddress::new(String::from("ioxxoj[asdfgh]zxcvbn"));
-    assert!(ip.other_re.is_match(&ip.raw_input));
 }
