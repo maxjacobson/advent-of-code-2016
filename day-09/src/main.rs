@@ -15,9 +15,9 @@ impl Decompressing {
             let pos = first.pos(0).unwrap();
             result.push_str(&input[0..pos.0]);
 
-            let characters_to_consume: usize= first.at(1).unwrap().parse().unwrap();
+            let characters_to_consume: usize = first.at(1).unwrap().parse().unwrap();
 
-            let chars = &input[pos.1.. pos.1 + characters_to_consume];
+            let chars = &input[pos.1..pos.1 + characters_to_consume];
 
             let times_to_repeat: i32 = first.at(2).unwrap().parse().unwrap();
 
@@ -25,7 +25,7 @@ impl Decompressing {
                 result.push_str(&chars);
             }
 
-            let remaining_input = &input[pos.1 + characters_to_consume ..];
+            let remaining_input = &input[pos.1 + characters_to_consume..];
 
             return result + &Decompressing::run(remaining_input.to_owned());
         } else {
@@ -62,7 +62,8 @@ fn marker_at_beginning() {
 
 #[test]
 fn multiple_markers() {
-    assert_eq!(Decompressing::run(format!("A(2x2)BCD(2x2)EFG")), "ABCBCDEFEFG");
+    assert_eq!(Decompressing::run(format!("A(2x2)BCD(2x2)EFG")),
+               "ABCBCDEFEFG");
 }
 
 #[test]
@@ -72,5 +73,6 @@ fn trick_marker() {
 
 #[test]
 fn multiple_trick_markers() {
-    assert_eq!(Decompressing::run(format!("X(8x2)(3x3)ABCY")), "X(3x3)ABC(3x3)ABCY");
+    assert_eq!(Decompressing::run(format!("X(8x2)(3x3)ABCY")),
+               "X(3x3)ABC(3x3)ABCY");
 }
